@@ -1,0 +1,52 @@
+{
+  "users": [
+    {
+      "code": "101",
+      "password": "1243",
+      "name": "Admin User",
+      "type": "admin"
+    },
+    {
+      "code": "111",
+      "password": "12121122", 
+      "name": "Ahmed Mohamed",
+      "type": "user"
+    },
+    {
+      "code": "112",
+      "password": "5678",
+      "name": "Sara Ali",
+      "type": "user"
+    }
+  ],
+  "logs": [
+    {
+      "userCode": "111",
+      "event": "LOGIN",
+      "breakType": "",
+      "duration": "",
+      "timestamp": "2024-01-15T08:00:00"
+    },
+    {
+      "userCode": "111", 
+      "event": "SHIFT_START",
+      "breakType": "",
+      "duration": "",
+      "timestamp": "2024-01-15T08:00:00"
+    },
+    {
+      "userCode": "111",
+      "event": "BREAK_START",
+      "breakType": "BREAK",
+      "duration": "",
+      "timestamp": "2024-01-15T10:00:00"
+    },
+    {
+      "userCode": "111",
+      "event": "BREAK_END",
+      "breakType": "BREAK",
+      "duration": "00:30:00",
+      "timestamp": "2024-01-15T10:30:00"
+    }
+  ]
+}

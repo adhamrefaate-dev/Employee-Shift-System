@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - Shift Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info h1 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .user-info p {
+            color: #666;
+            margin: 0;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .timer-section {
+            text-align: center;
+        }
+
+        .shift-timer {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #333;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .break-timer {
+            font-size: 2rem;
+            color: #666;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            display: none;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .break-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .btn-break {
+            background: #fd7e14;
+            color: white;
+        }
+
+        .btn-task {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-meeting {
+            background: #6f42c1;
+            color: white;
+        }
+
+        .stats-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .stat-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            color: #333;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* استايل خاص لإجمالي وقت البريكس */
+        .total-break-time {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .total-break-time .stat-label {
+            color: white;
+            font-size: 1.1em;
+        }
+
+        .total-break-time .stat-value {
+            color: white;
+            font-size: 1.4em;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-header">
+        <div class="user-info">
+            <h1>👨‍💼 User Dashboard</h1>
+            <p>Welcome, <span id="currentUser">User</span></p>
+        </div>
+        <button class="logout-btn" onclick="app.logout()">🚪 Logout</button>
+    </div>
+
+    <div class="main-content">
+        <div class="card timer-section">
+            <h3>🕒 Shift Timer</h3>
+            <div class="shift-timer" id="shiftTimer">00:00:00</div>
+            
+            <div class="controls">
+                <button class="btn btn-primary" id="startShiftBtn" onclick="app.startShift()">
+                    ▶ Start Shift
+                </button>
+                <button class="btn btn-danger" id="endShiftBtn" onclick="app.endShift()" disabled>
+                    ⏹ End Shift
+                </button>
+            </div>
+
+            <h4 style="margin-top: 30px; color: #666;">Break Controls</h4>
+            <div class="break-controls">
+                <button class="btn btn-break" onclick="app.startBreak('BREAK')">
+                    ☕ BREAK
+                </button>
+                <button class="btn btn-task" onclick="app.startBreak('ONE_TO_ONE')">
+                    👥 ONE TO ONE
+                </button>
+                <button class="btn btn-meeting" onclick="app.startBreak('TASK')">
+                    📋 TASK
+                </button>
+            </div>
+
+            <div class="break-timer" id="breakTimer">00:00:00</div>
+            <button class="btn btn-warning" id="endBreakBtn" onclick="app.endBreak()" style="display: none;">
+                ⏹ End Break
+            </button>
+        </div>
+
+        <div class="card stats-section">
+            <h3>📊 Today's Statistics</h3>
+            
+            <!-- العنصر الجديد: إجمالي وقت البريكس خلال الشفت -->
+            <div class="total-break-time">
+                <div class="stat-label">🕐 Total Break Time</div>
+                <div class="stat-value" id="totalBreakTime">00:00:00</div>
+                <div style="font-size: 0.9em; opacity: 0.9; margin-top: 5px;">During current shift</div>
+            </div>
+            
+            <div class="stat-item">
+                <span class="stat-label">Total Login Time:</span>
+                <span class="stat-value" id="totalLoginTime">00:00:00</span>
+            </div>
+            
+            <div class="stat-item">
+                <span class="stat-label">Current Break Time:</span>
+                <span class="stat-value" id="currentBreakTime">00:00:00</span>
+            </div>
+            
+            <div class="stat-item">
+                <span class="stat-label">Total Breaks Count:</span>
+                <span class="stat-value" id="totalBreaksCount">0</span>
+            </div>
+            
+            <div class="stat-item">
+                <span class="stat-label">Current Break Type:</span>
+                <span class="stat-value" id="currentBreakType">-</span>
+            </div>
+            
+            <div class="stat-item">
+                <span class="stat-label">Total Breaks Time:</span>
+                <span class="stat-value" id="totalBreaksTime">00:00:00</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
